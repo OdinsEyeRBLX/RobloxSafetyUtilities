@@ -2,7 +2,7 @@ import requests
 import json
 
 # Discord webhook URL (replace with your actual webhook URL)
-WEBHOOK_URL = "https://discord.com/api/webhooks/1293231653312790648/LoyBiTYYAB9KhmKpUHO9XxfwrABPZdknMUA08Zl4a3as-CaPYySW9bnXJYx3JGyLIzr8"
+WEBHOOK_URL = "https://discord.com/api/webhooks/"
 
 def get_user_id(username):
     url = "https://users.roblox.com/v1/usernames/users"
