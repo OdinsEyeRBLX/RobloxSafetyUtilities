@@ -2,10 +2,10 @@ import requests
 import json
 
 # Discord webhook URL (replace with your actual webhook URL)
-WEBHOOK_URL = "https://discord.com/api/webhooks/1293231653312790648/LoyBiTYYAB9KhmKpUHO9XxfwrABPZdknMUA08Zl4a3as-CaPYySW9bnXJYx3JGyLIzr8"
+WEBHOOK_URL = "http://DISCORD-WEBHOOK-URL"
 
 def get_user_id(username):
-    """Retrieves the user ID based on the username."""
+    
     url = "https://users.roblox.com/v1/usernames/users"
     payload = {
         "usernames": [username],
@@ -20,28 +20,28 @@ def get_user_id(username):
         return None
 
 def get_friends(user_id):
-    """Retrieves the friends of the user."""
+    
     url = f"https://friends.roblox.com/v1/users/{user_id}/friends"
     response = requests.get(url)
     friends_data = response.json()
     return [{"id": friend["id"], "name": friend["name"]} for friend in friends_data.get("data", [])]
 
 def get_followers(user_id):
-    """Retrieves the followers of the user."""
+    
     url = f"https://friends.roblox.com/v1/users/{user_id}/followers"
     response = requests.get(url)
     followers_data = response.json()
     return [{"id": follower["id"], "name": follower["name"]} for follower in followers_data.get("data", [])]
 
 def get_following(user_id):
-    """Retrieves the users followed by the user."""
+    
     url = f"https://friends.roblox.com/v1/users/{user_id}/followings"
     response = requests.get(url)
     following_data = response.json()
     return [{"id": user["id"], "name": user["name"]} for user in following_data.get("data", [])]
 
 def get_terminated_count(user_ids):
-    """Returns the count of terminated users from a list of user IDs."""
+    
     terminated_count = 0
     terminated_names = []
     for user_id in user_ids:
@@ -54,7 +54,7 @@ def get_terminated_count(user_ids):
     return terminated_count, terminated_names
 
 def get_game_links(user_id):
-    """Retrieves game links created by the user."""
+    
     url = f"https://games.roblox.com/v2/users/{user_id}/games?accessFilter=All&sortOrder=Asc&limit=10"
     response = requests.get(url)
     games_data = response.json()
@@ -62,14 +62,14 @@ def get_game_links(user_id):
     return [f"https://www.roblox.com/games/{game['id']}" for game in games]
 
 def get_avatar_thumbnail(user_id):
-    """Retrieves the avatar thumbnail of the user."""
+    
     url = f"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={user_id}&size=150x150&format=Png&isCircular=true"
     response = requests.get(url)
     thumbnail_data = response.json()
     return thumbnail_data["data"][0]["imageUrl"]
 
 def send_discord_webhook(user_data):
-    """Sends the user information to the specified Discord webhook URL."""
+    
     embed = {
         "title": f"Roblox Profile Information: {user_data['username']}",
         "description": "Message sent using code",
@@ -103,7 +103,7 @@ def send_discord_webhook(user_data):
         print("Failed to send information:", response.status_code, response.text)
 
 def write_to_file(user_data):
-    """Writes the user information to a text file if it exceeds Discord's character limit."""
+    
     file_name = f"Roblox extended info - {user_data['username']}.txt"
     with open(file_name, "w") as file:
         file.write(f"Roblox Profile Information: {user_data['username']}\n\n")
