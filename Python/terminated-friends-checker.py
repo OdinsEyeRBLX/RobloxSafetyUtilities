@@ -47,7 +47,7 @@ def print_terminated_friends(username_or_id):
         time.sleep(0.5)
         is_terminated, username = is_user_terminated(friend["id"])
         if is_terminated:
-            print("✔️ Terminated friend found: {username} - Link: https://www.roblox.com/users/{friend['id']}/profile")
+            print(f"✔️ Terminated friend found: {username} - Link: https://www.roblox.com/users/{friend['id']}/profile")
 
 username_or_id = input("Enter Roblox Username or User ID: ")
 print("⏳ Checking...")
