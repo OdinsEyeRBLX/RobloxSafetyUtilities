@@ -2,7 +2,7 @@
 npm install axios
 npm install prompt-sync
 
-REPLACE THE "KEYWORD" GROUP AND ITS ID FOR ANY GROUP OF YOUR CHOICE, IT HELPS IN A QUICK CHECK IF YOU ARE CHECKING YOUR GROUP.
+REPLACE THE "KEYWORD" GROUP AND ITS ID FOR ANY GROUP OF YOUR CHOICE, IT HELPS IN A QUICK CHECK IF YOU ARE CHECKING YOUR GROUP (LINE 84 - 99).
 
 This code checks the common members between 2 groups. Enter 2 group IDs and select a number option given in the role list to scan for common members in that role of Group 1 and entire group 2.
 !!! Role limitation for group 1 is done to reduce rate limits (helps to check over large flagged groups) !!!
