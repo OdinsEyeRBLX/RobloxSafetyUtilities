@@ -1,96 +1,81 @@
-const axios = require('axios');
-const readline = require('readline');
+import requests
+import re
 
-// GitHub raw URL for the flagged group IDs file - this allows automation
-const GROUP_IDS_URL = 'https://raw.githubusercontent.com/OdinsEyeRBLX/RobloxSafetyUtilities/main/FLAGGED%20ERP%20GROUPS.txt';
+# GitHub raw URL for the flagged group IDs file
+GROUP_IDS_URL = 'https://raw.githubusercontent.com/OdinsEyeRBLX/RobloxSafetyUtilities/main/FLAGGED%20ERP%20GROUPS.txt'
 
-async function loadGroupIdsFromGithub() {
-    try {
-        const response = await axios.get(GROUP_IDS_URL);
-        const content = response.data;
-        const groupIds = new Set(
-            content
-                .split(',')
-                .map(id => id.trim())
-                .filter(id => /^\d+$/.test(id))
-                .map(Number)
-        );
-        return groupIds;
-    } catch (error) {
-        console.error("Error fetching group IDs:", error.message);
-        return new Set();
-    }
-}
+def load_group_ids_from_github():
+    try:
+        response = requests.get(GROUP_IDS_URL)
+        response.raise_for_status()
+        content = response.text
+        group_ids = set(
+            map(int, filter(lambda x: re.match(r'^\d+$', x), content.split(',')))
+        )
+        return group_ids
+    except requests.RequestException as e:
+        print(f"Error fetching group IDs: {e}")
+        return set()
 
-async function getUserId(username) {
-    try {
-        const response = await axios.post("https://users.roblox.com/v1/usernames/users", {
-            usernames: [username],
-            excludeBannedUsers: false
-        });
-        const data = response.data;
-        return data.data?.[0]?.id || null;
-    } catch (error) {
-        console.error("Error fetching user ID:", error.message);
-        return null;
-    }
-}
+def get_user_id(username):
+    try:
+        response = requests.post(
+            "https://users.roblox.com/v1/usernames/users",
+            json={"usernames": [username], "excludeBannedUsers": False}
+        )
+        response.raise_for_status()
+        data = response.json()
+        return data['data'][0]['id'] if data['data'] else None
+    except requests.RequestException as e:
+        print(f"Error fetching user ID: {e}")
+        return None
 
-async function getUserGroups(userId) {
-    try {
-        const url = `https://groups.roblox.com/v1/users/${userId}/groups/roles`;
-        const response = await axios.get(url);
-        return response.data.data.map(group => ({
-            id: group.group.id,
-            name: group.group.name
-        }));
-    } catch (error) {
-        console.error("Error fetching user groups:", error.message);
-        return [];
-    }
-}
+def get_user_groups(user_id):
+    try:
+        url = f"https://groups.roblox.com/v1/users/{user_id}/groups/roles"
+        response = requests.get(url)
+        response.raise_for_status()
+        groups_data = response.json()
+        return [{"id": group['group']['id'], "name": group['group']['name']} for group in groups_data['data']]
+    except requests.RequestException as e:
+        print(f"Error fetching user groups: {e}")
+        return []
 
-async function validateMultiGroupMembership(usernameOrId, knownGroupIds) {
-    let userId;
+def validate_multi_group_membership(username_or_id, known_group_ids):
+    user_id = None
 
-    if (/^\d+$/.test(usernameOrId)) {
-        userId = parseInt(usernameOrId, 10);
-    } else {
-        userId = await getUserId(usernameOrId);
-        if (!userId) {
-            console.log("Invalid username. User not found.");
-            return;
-        }
-    }
+    # Check if the input is a number (ID) or a username
+    if username_or_id.isdigit():
+        user_id = int(username_or_id)
+    else:
+        user_id = get_user_id(username_or_id)
+        if not user_id:
+            print("Invalid username. User not found.")
+            return
 
-    console.log("Retrieving user groups...");
-    const userGroups = await getUserGroups(userId);
+    print("Retrieving user groups...")
+    user_groups = get_user_groups(user_id)
 
-    if (userGroups.length > 0) {
-        console.log("Checking group memberships against known ERP groups...");
-        const memberGroups = userGroups.filter(group => knownGroupIds.has(group.id));
+    if user_groups:
+        print("Checking group memberships against known ERP groups...")
+        member_groups = [
+            group for group in user_groups if group['id'] in known_group_ids
+        ]
 
-        if (memberGroups.length > 0) {
-            console.log("The user is a member of the following known ERP groups:");
-            memberGroups.forEach((group, index) => {
-                const link = `https://www.roblox.com/groups/${group.id}`;
-                console.log(` - ${group.name} | Link: ${link} | ${index + 1}`);
-            });
-        } else {
-            console.log("The user is not a member of any of the specified groups.");
-        }
-    } else {
-        console.log("The user is not a member of any groups.");
-    }
-}
+        if member_groups:
+            print("The user is a member of the following known ERP groups:")
+            for index, group in enumerate(member_groups, start=1):
+                link = f"https://www.roblox.com/groups/{group['id']}"
+                print(f" - {group['name']} | Link: {link} | {index}")
+        else:
+            print("The user is not a member of any of the specified groups.")
+    else:
+        print("The user is not a member of any groups.")
 
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
+def main():
+    username_or_id = input("Enter Roblox Username or User ID: ")
+    known_group_ids = load_group_ids_from_github()
+    validate_multi_group_membership(username_or_id, known_group_ids)
 
-rl.question("Enter Roblox Username or User ID: ", async (input) => {
-    const knownGroupIds = await loadGroupIdsFromGithub();
-    await validateMultiGroupMembership(input, knownGroupIds);
-    rl.close();
-});
+if __name__ == "__main__":
+    main()
