@@ -7,7 +7,7 @@ Everything in this tool is open source, and you may use it how you like. We rath
 Lua (Roblox Game codes), Python and JavaScript can freely be used as you like.
 
 ## Group Logging
-Every group in KNOWN_ERP_GROUPS.TXT is manually checked by a team of users. We flag them on the basis of:
+Every group in `FLAGGED ERP GROUPS.txt` is manually checked by a team of users. We flag them on the basis of:
 - Amount of inappropriate accounts in the group
 - Uploading/owning inappropriate game assets
 - Uploading bypassed clothing
