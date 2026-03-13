@@ -16,3 +16,5 @@ Every group in KNWON_ERP_GROUPS.TXT is manually checked by a team of users. We f
 - Groups that are clearly made for an inappropriate intent and can pose a threat to minors
 
 ### A website integration of this repository is available at: https://scout-roblox.onrender.com/
+
+### Extension available at: https://github.com/MythicalWays5/SCOUT_Extension/tree/main , thank you, @MythicalWays5!
