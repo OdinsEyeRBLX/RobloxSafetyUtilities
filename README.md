@@ -17,4 +17,4 @@ Every group in KNWON_ERP_GROUPS.TXT is manually checked by a team of users. We f
 
 ### A website integration of this repository is available at: https://scout-roblox.onrender.com/
 
-### Extension available at: https://github.com/MythicalWays5/SCOUT_Extension/tree/main , thank you, @MythicalWays5!
+### Extension available at: https://github.com/MythicalWays5/SCOUT_Extension/tree/main , thank you, @MythicalWays5 !
